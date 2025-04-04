@@ -1,0 +1,742 @@
+{
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        920
+      ],
+      "id": "fc912119-ccc3-47ef-bcc8-44a7ef6320f0",
+      "name": "Telegram Trigger1",
+      "webhookId": "b6535be2-9172-4a01-ba58-58b648373260",
+      "credentials": {
+        "telegramApi": {
+          "id": "5MhgwiY2PSUBNYwD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "6bffa0c2-d288-4b77-b773-22acb6650d0f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "541b82f5-3b1c-41c2-9f7a-0bcdcf1664c4",
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voice"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -580,
+        920
+      ],
+      "id": "5df6f4ce-c68f-4c66-a81a-f972423f24b6",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b71ec298-971d-4dc0-8c43-4e4c98bc843c",
+              "name": "Text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        820
+      ],
+      "id": "c59de768-a5e3-4b2e-bd2f-7957c6cb169d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger1').item.json.message.voice.file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -360,
+        1020
+      ],
+      "id": "5b65db0c-b706-41fc-b74b-5b44c0969a73",
+      "name": "Telegram2",
+      "webhookId": "9199ebb4-4f46-4050-bdd9-826fd657dd23",
+      "credentials": {
+        "telegramApi": {
+          "id": "5MhgwiY2PSUBNYwD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -140,
+        1020
+      ],
+      "id": "dcbcf0de-7d57-47ac-9e83-1b30389c5a42",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "98SevIE7TbzLgIz1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a helpful assistant that extracts job search parameters from a message.\n\nYour job:\n1. Extract job_role and job_location from the user’s message.\n2. Output ONLY a valid JSON that looks like this:\n\n{\n  \"query\": \"{ jobs[] { title company location url } }\",\n  \"url\": \"https://www.linkedin.com/jobs/search/?keywords=<job_role>&location=<job_location>\",\n  \"params\": {\n    \"wait_for\": 0\n  }\n}\n\nDo not invent or hallucinate. Use ONLY the user's input.\nUser input: {{ $json.Text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        200,
+        820
+      ],
+      "id": "ce2bf3b3-7d07-44db-897b-2ae7a7fc1c0b",
+      "name": "OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "98SevIE7TbzLgIz1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.agentql.com/v1/query-data",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "co46xMIuczKZMS7AayLS14Dn4OI4JLTWSFRSnn05nD1PapHvl1sa4Q"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        540,
+        820
+      ],
+      "id": "8ab7aec7-8ea7-4aa7-9f22-7c9ba7e49607",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=Here's the curated Job List for you:\n[Job List](https://docs.google.com/spreadsheets/d/1VEj9UGJUTite-PmV___QiS7relRzaguQ1AfcUEIymzk/edit?usp=sharing)\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1980,
+        860
+      ],
+      "id": "be1297cd-de71-474d-ac10-1ad2e867eef4",
+      "name": "Telegram7",
+      "webhookId": "5f03d638-c31c-4d10-9da9-c4e0df147150",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "5MhgwiY2PSUBNYwD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8c807f17-aa8e-4797-ab11-8d67986c1d81",
+              "name": "Title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "7ec1051c-6a29-4048-a83e-eb034b34e2c1",
+              "name": "Comapny",
+              "value": "={{ $json.company }}",
+              "type": "string"
+            },
+            {
+              "id": "78efe1d8-af4f-49e8-b620-c0f6b48d405d",
+              "name": "Location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "3ba1720e-a5c9-4741-9deb-2d76629f24ca",
+              "name": "URL",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        980,
+        820
+      ],
+      "id": "8b787807-d42d-4d2c-9a94-e21204565672",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.jobs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        740,
+        820
+      ],
+      "id": "bf5b9ed5-ee86-4201-8004-1b8d29b44f0a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1VEj9UGJUTite-PmV___QiS7relRzaguQ1AfcUEIymzk",
+          "mode": "list",
+          "cachedResultName": "Job List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VEj9UGJUTite-PmV___QiS7relRzaguQ1AfcUEIymzk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VEj9UGJUTite-PmV___QiS7relRzaguQ1AfcUEIymzk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "URL": "={{ $json.URL }}",
+            "Title": "={{ $json.Title }}",
+            "Company": "={{ $json.Comapny }}",
+            "Location": "={{ $json.Location }}",
+            "Recruiter": "={{ $json.Recruiter }}",
+            "Recruiter company": "={{ $json['Recruiter Company'] }}"
+          },
+          "matchingColumns": [
+            "URL"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recruiter",
+              "displayName": "Recruiter",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Recruiter company",
+              "displayName": "Recruiter company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1760,
+        860
+      ],
+      "id": "65f78db1-6415-44c8-aa70-b6ca8de3b202",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ayMPgbHvR2biiNpj",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.agentql.com/v1/query-data",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "co46xMIuczKZMS7AayLS14Dn4OI4JLTWSFRSnn05nD1PapHvl1sa4Q"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{ recruiterName[] { name company } }\",\n  \"url\": \"{{ $json.url }}\",\n  \"params\": {\n    \"wait_for\": 0\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        1040
+      ],
+      "id": "9a097bfb-c266-40c1-a792-07a5e502ab0c",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b537de5e-d28f-443c-9c50-5421b3c1c917",
+              "name": "Recruiter",
+              "value": "={{ $json.data.recruiterName[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "f94d7790-84b6-461a-bd0d-6b76e0072509",
+              "name": "Recruiter Company",
+              "value": "={{ $json.data.recruiterName[0].company }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1180,
+        1040
+      ],
+      "id": "74163151-ea4d-4c37-8d06-bc2fedc2cc25",
+      "name": "Edit Recruiter Fields"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        860
+      ],
+      "id": "8325226f-732c-4203-933b-8da81a989953",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://api.hunter.io/v2/email-finder",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "domain",
+              "value": "={{ $json[\"Recruiter Company\"] ? $json[\"Recruiter Company\"].toLowerCase().replace(/[^a-zA-Z]/g, \"\") + \".com\" : \"example.com\" }}"
+            },
+            {
+              "name": "first_name",
+              "value": "={{ $json[\"Recruiter\"] ? $json[\"Recruiter\"].split(\" \")[0] : \"First\" }}"
+            },
+            {
+              "name": "last_name",
+              "value": "={{ $json[\"Recruiter\"] ? $json[\"Recruiter\"].split(\" \").slice(1).join(\" \") : \"Last\" }}"
+            },
+            {
+              "name": "api_key",
+              "value": "7d5613bf4bfa284f3732fe9a34ae04b136d78f31"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        1060
+      ],
+      "id": "684cf423-bad7-4061-8a91-b43fb277dfb3",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b50ac4db-2c2b-498c-90e3-61430ee11838",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        1040
+      ],
+      "id": "5934364d-0cdc-41c6-89d1-2525575dfeb4",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Telegram7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Edit Recruiter Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Recruiter Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1d4c1855-5ca8-420e-b055-a48f827b37ba",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f5809bf65306341a540757eb5751d2999aa6294fe1426df8d4f1bd63a8b55dc0"
+  },
+  "id": "f5jFBW9V4JUr5YE2",
+  "tags": []
+}
