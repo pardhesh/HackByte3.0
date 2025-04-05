@@ -1,25 +1,70 @@
 # HackByte3.0
 
 # Job Application Assistant - n8n Workflow
+# Why We Built This
+Job hunting in 2025 still feels like it’s stuck in 2010. Open 20 tabs, refresh job boards, copy-paste the same cold email, hope it lands somewhere other than a recruiter’s trash. It’s exhausting, repetitive, and wildly inefficient.
 
-# Overview
+# Problem It Solves
+If you're a job seeker, chances are you’ve:
 
-This repository contains an n8n workflow designed to automate the job application process. The workflow scrapes job listings, extracts HR contacts, and facilitates easy applications via an AI-integrated system.
+1.Spent more time scrolling job boards than actually applying.
 
-# Features
+2.Played detective trying to find the elusive “Hiring Manager’s” email.
 
-Job Scraping: Extracts job postings from LinkedIn based on user-defined filters (role, location, etc..).
+3.Fired off 20 generic cold emails and heard back from zero.
 
-HR Contact Extraction: Uses the Hunter API to identify and extract HR email addresses from job descriptions.
+4.Lost track of where you applied, when, and to whom.
 
-Google Sheet Integration: Stores scraped job data for easy tracking.
+We figured: what if the job search could feel less like a full-time job?
 
-Telegram Bot Integration: Allows users to input job preferences and receive job listings via Telegram.
+# What This Project Actually Does
+Just give us a one-line prompt like:
 
-# Upcoming
+"Data Analyst in Bangalore"
 
-Web Application Integration : A user-friendly interface to manage job searches and applications.
+"Backend Developer in Berlin"
 
-Automated Cold Emails: Generates and sends AI-crafted outreach emails to HR contacts.
+"Marketing Manager, Remote"
 
-Easy Apply: Automates job applications using user-submitted details and resumes.
+And we’ll handle the rest—literally.
+
+Scrapes jobs from platforms like LinkedIn, compiles them into a clean, deduplicated dataset (title, company, location, and
+links).
+
+Finds recruiter details, including names and email addresses (when available, and we're good at digging).
+
+Generates AI-powered cold emails & personalized cover letters using your resume as context.
+
+Automatically sends those emails to recruiters. No "Ctrl+V" needed.
+
+Returns a single Google Sheet with every job, contact, and email status for easy tracking.
+
+# What Makes It Awesome
+
+One prompt, many jobs. No more juggling tabs or logging into 5 job sites.
+
+AI does your talking. Personalized cold emails that don’t sound like they were written by a robot (even though, technically, they were).
+
+Automated outreach. Recruiters get pinged without you lifting a finger.
+
+Live job tracker. A Google Sheet with everything you need — no guesswork, no confusion.
+
+# Who's It For?
+
+Job seekers tired of the rinse-and-repeat application cycle.
+
+Career switchers who need to hit volume fast.
+
+Career coaches helping clients scale outreach without burnout.
+
+
+
+
+
+Note:
+This repository contains the project that was made for HackByte 3.0.
+By Team 9749 - 
+Harshith G, Kesav M, ABhinay B, Pardhesh M
+
+
+
