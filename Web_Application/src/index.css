@@ -1,0 +1,108 @@
+:root {
+  /* Dark theme colors */
+  --primary-color-dark: #4da8ff;
+  --primary-color-hover-dark: #2a8ae5;
+  --secondary-color-dark: #2ecc71;
+  --error-color-dark: #e74c3c;
+  --text-color-dark: #ffffff;
+  --text-secondary-dark: #cccccc;
+  --bg-dark-gradient: linear-gradient(to bottom, #1a2234, #121a29);
+  --card-bg-dark: rgba(255, 255, 255, 0.05);
+  --input-bg-dark: rgba(255, 255, 255, 0.9);
+  --shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  /* Light theme colors */
+  --primary-color-light: #3b82f6;
+  --primary-color-hover-light: #2563eb;
+  --secondary-color-light: #10b981;
+  --error-color-light: #ef4444;
+  --text-color-light: #1f2937;
+  --text-color-light-inverse: #ffffff;
+  --text-secondary-light: #4b5563;
+  --bg-light-gradient: linear-gradient(to bottom, #e0f2fe, #dbeafe);
+  --card-bg-light: rgba(255, 255, 255, 0.9);
+  --input-bg-light: #334155;
+  --input-text-light: #ffffff;
+  --placeholder-light: #94a3b8;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+  
+  /* Dynamic variables that change with theme */
+  --primary-color: var(--primary-color-dark);
+  --primary-color-hover: var(--primary-color-hover-dark);
+  --secondary-color: var(--secondary-color-dark);
+  --error-color: var(--error-color-dark);
+  --text-color: var(--text-color-dark);
+  --text-secondary: var(--text-secondary-dark);
+  
+  --transition-speed: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+body {
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+body.dark-theme {
+  background: var(--bg-dark-gradient);
+  color: var(--text-color-dark);
+  --primary-color: var(--primary-color-dark);
+  --primary-color-hover: var(--primary-color-hover-dark);
+  --secondary-color: var(--secondary-color-dark);
+  --error-color: var(--error-color-dark);
+  --text-color: var(--text-color-dark);
+  --text-secondary: var(--text-secondary-dark);
+}
+
+body.light-theme {
+  background: var(--bg-light-gradient);
+  color: var(--text-color-light);
+  --primary-color: var(--primary-color-light);
+  --primary-color-hover: var(--primary-color-hover-light);
+  --secondary-color: var(--secondary-color-light);
+  --error-color: var(--error-color-light);
+  --text-color: var(--text-color-light);
+  --text-secondary: var(--text-secondary-light);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
+
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+} 

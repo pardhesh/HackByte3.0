@@ -1,0 +1,35 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.App::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(77, 168, 255, 0.1), transparent 60%),
+              radial-gradient(circle at bottom left, rgba(77, 168, 255, 0.05), transparent 40%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.dark-theme .App::before {
+  background: radial-gradient(circle at top right, rgba(77, 168, 255, 0.15), transparent 60%),
+              radial-gradient(circle at bottom left, rgba(77, 168, 255, 0.1), transparent 40%);
+}
+
+.light-theme .App::before {
+  background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.15), transparent 60%),
+              radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 40%);
+} 
